@@ -7,20 +7,9 @@ module.exports = function(app, settings) {
     res.render('index');
   });
 
- //Auth entry point
+ //Auth entry point; Get reddit auth, then start app
   router.get('/auth', function(req, res, next) {
     require('../controllers/auth.js')(req, res, next, app, settings);
-
-/*
-    if (!req.query.state) {
-      console.log("im in auth");
-      req.app.locals.appState = require('randomstring').generate(10);
-      res.redirect(`https://www.reddit.com/api/v1/authorize?client_id=${settings.appClientId}&response_type=code&state=${req.app.locals.appState}&redirect_uri=${settings.appRedirectUri}&duration=${settings.appDuration}&scope=${settings.appScope}`);
-    } else {
-      console.log("im in the other auth");
-      require('../controllers/auth.js')(req, res, next, app, settings);
-    }
-*/
     
   });
 
@@ -30,7 +19,7 @@ module.exports = function(app, settings) {
 
   router.get('/test', function(req, res, next) {
     res.render('sort-app');
-  })
+  });
 
   app.use('/', router);
   app.use('/auth', router);

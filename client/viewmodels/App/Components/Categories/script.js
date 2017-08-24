@@ -1,4 +1,4 @@
-import bus from '../bus';
+import bus from '../../../bus';
 
 export default {
   name: 'Categories',
