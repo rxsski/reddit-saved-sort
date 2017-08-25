@@ -1,9 +1,9 @@
 #Other files
-vars.js
-legacy.txt
+/vars.js
+/legacy.txt
 
 #VS Code settings
-.vscode
+/.vscode
 
 # Logs
 logs
