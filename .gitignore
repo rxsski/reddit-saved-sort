@@ -2,6 +2,9 @@
 vars.js
 legacy.txt
 
+#VS Code settings
+.vscode
+
 # Logs
 logs
 *.log
