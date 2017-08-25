@@ -10,21 +10,20 @@ module.exports = function(app, settings) {
  //Auth entry point; Get reddit auth, then start app
   router.get('/auth', function(req, res, next) {
     require('../controllers/auth.js')(req, res, next, app, settings);
-    
   });
 
-  router.get('/sort-app', function(req, res, next) {
-    require('../controllers/sort-app.js');
-  });
+  router.get('/sort', function(req, res, next) {
+    //TODO: make sure the vars below are there, otherwise throw err/redirect
+    var locals = {
+      accessToken: req.app.get( 'access_token' ),
+      username: req.app.get( 'username' )
+    }
 
-  router.get('/test', function(req, res, next) {
-    res.render('sort-app');
+    res.render( 'sort-app', locals );
   });
 
   app.use('/', router);
   app.use('/auth', router);
-  app.use('/sort-app', router);
-
-  app.use('/test', router);
+  app.use('/sort', router);
 
 };

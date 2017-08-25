@@ -7,77 +7,29 @@ module.exports = function( req, res, next, app, settings ) {
     req.app.locals.appState = require( 'randomstring' ).generate( 10 );
     res.redirect( `https://www.reddit.com/api/v1/authorize?client_id=${settings.appClientId}&response_type=code&state=${req.app.locals.appState}&redirect_uri=${settings.appRedirectUri}&duration=${settings.appDuration}&scope=${settings.appScope}` );
   } else {
+    //Check if empty object is returned in req.query
     if ( Object.keys( req.query ).length === 0 && req.query.constructor === Object ) {
-      // Add error page render here later
+      // Add error page render here later, obvious error since no query string here.
     } else {
       if ( req.app.locals.appState === req.query.state ) {
         var authReq = require( './auth-requests' );
 
-        return Promise.try(() => {
+        return Promise.try( () => {
           //Get token access
           return bhttp.post( 'https://www.reddit.com/api/v1/access_token', authReq.getTokenCode( req.query.code ), authReq.getTokenAuthData() );
-        }).then(function(postRes) {
+        }).then( function( postRes ) {
           //Save token for later calls
           req.app.set( 'access_token', postRes.body.access_token );
           //Get users username
           return bhttp.get( 'https://oauth.reddit.com/api/v1/me', authReq.getAuthUserData( req.app.get( 'access_token' ) ) );
-        }).then(function(userData) {
-          req.app.set('username', userData.body.name);
-          
-          return bhttp.get( 'https://oauth.reddit.com/user/' + userData.body.name + '/saved', authReq.getAuthUserData( req.app.get( 'access_token' ) ) );
-        }).then(function( savedData ) {
-          //This only has data from one page
-          res.send( savedData.body );
+        }).then( function( userData ) {
+          //Save username
+          req.app.set( 'username', userData.body.name );
+          res.redirect( '/sort' );
+          //Pull first page of saved data
+          //return bhttp.get( 'https://oauth.reddit.com/user/' + userData.body.name + '/saved', authReq.getAuthUserData( req.app.get( 'access_token' ) ) );
         });
 
-        //var gotIt = new Promise(function(resolve, reject){
-          //request(authReq.getTokenData(req.query.code), resolve);
-        //}).then(function(res){
-        //request(authRequest.getAuthUserData, )
-        //})
-        //var token = authReq.getToken(req.query.code);
-        //var name = authReq.getAuthUser(token);
-       // console.log(name, ' NAME HERE');
-          //func(req.query.code);
-          /*
-          console.log(req);
-
-          var codeToken = {
-                'grant_type' : 'authorization_code',
-                'code' : req.query.code,
-                'redirect_uri' : settings.appRedirectUri
-              }
-              var params = {
-                uri : 'https://www.reddit.com/api/v1/access_token',
-                method : 'POST',
-                form : codeToken,
-                auth : {
-                  user : settings.appClientId,
-                  pass : settings.appSecret
-                },
-                json : true
-              }
-          // First post, get auth token
-          request(params, function(authError, authResponse, authBody) {
-
-            var tokenParams = {
-              uri : 'https://oauth.reddit.com/user/rxsski/saved',
-              method : 'GET',
-              headers : {
-              'Authorization': `bearer ${authBody.access_token}`,
-              'User-Agent': settings.appUserAgent
-              }
-            }
-
-            // Now make req for saved info
-            request(tokenParams, function(tokenError, tokenResponse, tokenBody) {
-
-              var redditResponse = JSON.parse(tokenBody);
-              res.send(redditResponse.data.children);
-
-            });
-          });
-          */
       } else {
           //error render, state not adding up
       }

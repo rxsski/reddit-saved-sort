@@ -7,4 +7,4 @@ const vm = new Vue({
     app: AppComponent
   },
   render: h => h('app')
-})
+});
