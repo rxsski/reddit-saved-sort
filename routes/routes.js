@@ -14,12 +14,15 @@ module.exports = function(app, settings) {
 
   router.get('/sort', function(req, res, next) {
     //TODO: make sure the vars below are there, otherwise throw err/redirect
+    /*
     var locals = {
       accessToken: req.app.get( 'access_token' ),
       username: req.app.get( 'username' )
     }
 
     res.render( 'sort-app', locals );
+    */
+    require( '../controllers/sort.js' )( req, res, next, app, settings );
   });
 
   app.use('/', router);
