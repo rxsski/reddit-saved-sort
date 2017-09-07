@@ -25,8 +25,13 @@ module.exports = function(app, settings) {
     require( '../controllers/sort.js' )( req, res, next, app, settings );
   });
 
+  router.get('/sort-app', function( req, res, next ) {
+    res.render( 'sort-app' );
+  });
+
   app.use('/', router);
   app.use('/auth', router);
   app.use('/sort', router);
+  app.use( '/sort-app', router );
 
 };
