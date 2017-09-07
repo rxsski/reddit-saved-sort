@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var nodeSassMiddleware = require('node-sass-middleware');
 
 var settings = require('./vars.js');
 var app = express();
@@ -20,10 +21,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(require('node-sass-middleware')({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
+app.use(nodeSassMiddleware({
+  src: path.join(__dirname, 'sass'),
+  dest: path.join(__dirname, 'public/stylesheets'),
   indentedSyntax: true,
+  prefix: '/stylesheets',
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
